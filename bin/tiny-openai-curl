@@ -113,17 +113,14 @@ fi
 
 ENDPOINT="${API_BASE%/}/chat/completions"
 
-# Build request body using Python for correct JSON escaping
-REQ_BODY=$(python3 - <<PY
-import json, sys
-model = ${MODEL@Q}
-system = ${SYSTEM@Q}
-prompt = ${PROMPT@Q}
+# Build request body using Python for correct JSON escaping (no bash-specific quoting)
+REQ_BODY=$(MODEL="$MODEL" SYSTEM="$SYSTEM" PROMPT="$PROMPT" python3 - <<'PY'
+import json, os
 body = {
-    "model": model,
+    "model": os.environ.get("MODEL", "gpt-4o-mini"),
     "messages": [
-        {"role": "system", "content": system},
-        {"role": "user", "content": prompt},
+        {"role": "system", "content": os.environ.get("SYSTEM", "You are a helpful assistant.")},
+        {"role": "user", "content": os.environ.get("PROMPT", "")},
     ]
 }
 print(json.dumps(body))
@@ -184,4 +181,3 @@ case "$HTTP_CODE" in
   2*) exit 0 ;;
   *) exit 3 ;;
 esac
-
