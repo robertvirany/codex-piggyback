@@ -29,7 +29,7 @@ async fn main() -> anyhow::Result<()> {
     let conv_id = Uuid::new_v4().to_string();
 
     let body = serde_json::json!({
-        "model": "gpt-5.0-chat", 
+        "model": "gpt-5", 
         "instructions": "you are a terse assistant.",
         "input": [
             {
@@ -53,7 +53,7 @@ async fn main() -> anyhow::Result<()> {
 
     let client = reqwest::Client::new();
     let res = client
-        .post("https://api.openai.com/v1/responses")
+        .post("https://chatgpt.com/backend-api/codex")
         .bearer_auth(access_token)
         .header("chatgpt-account-id", account_id)
         .header("accept", "text/event-stream")
