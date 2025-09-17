@@ -1,3 +1,7 @@
 target/
 flows.mitm
 *pycache*
+*.log
+$*
+*.lines
+*.json

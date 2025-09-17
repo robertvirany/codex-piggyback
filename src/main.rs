@@ -36,7 +36,7 @@ async fn main() -> anyhow::Result<()> {
                 "type":"message",
                 "role":"user",
                 "content":[
-                    { "type": "output_text", "text": "hello world" }
+                    { "type": "input_text", "text": "hello world" }
                 ]
             }
         ],
@@ -44,7 +44,7 @@ async fn main() -> anyhow::Result<()> {
         "tool_choice": "auto",
         "parallel_tool_calls": false,
         "reasoning": serde_json::Value::Null,
-        "store": true,
+        "store": false,
         "stream": true,
         "include": [],
         "prompt_cache_key": conv_id,
@@ -53,14 +53,19 @@ async fn main() -> anyhow::Result<()> {
 
     let client = reqwest::Client::new();
     let res = client
-        .post("https://chatgpt.com/backend-api/codex")
+        .post("https://chatgpt.com/backend-api/codex/responses")
         .bearer_auth(access_token)
-        .header("chatgpt-account-id", account_id)
-        .header("accept", "text/event-stream")
-        .header("content-type", "application/json")
+        .header("version", //VERSION//)
         .header("openai-beta", "responses=experimental")
         .header("conversation_id", &conv_id)
         .header("session_id", &conv_id)
+        .header("accept", "text/event-stream")
+        .header("content-type", "application/json")
+        .header("chatgpt-account-id", account_id)
+        .header("user-agent", codex_cli_rs///VERSION// (Ubuntu 24.4.0; x86_64) WindowsTerminal)
+        .header("originator", "codex_cli_rs")
+        .header("host", "chatgpt.com")
+        .header("content-length", //CONTENT-LENGTH//)
         .json(&body)
         .send()
         .await?;
