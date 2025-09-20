@@ -5,3 +5,4 @@ flows.mitm
 $*
 *.lines
 *.json
+*.http
