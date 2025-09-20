@@ -1,6 +1,6 @@
 use serde::Deserialize;
 use std::{fs, path::PathBuf};
-//use uuid::Uuid;
+use uuid::Uuid;
 use futures_util::StreamExt;
 
 #[derive(Deserialize)]
@@ -26,10 +26,10 @@ async fn main() -> anyhow::Result<()> {
     let access_token = &auth.tokens.access_token;
     let account_id = &auth.tokens.account_id;
 
-    let conv_id = String::from("redacted_for_git");
+    let conv_id = Uuid::new_v4().to_string();
     
     const BASE_PROMPT: &str = include_str!("prompt.md");
-    //let prompt_cache_key = conv_id.clone();
+    let prompt_cache_key = conv_id.clone();
     //let instructions = format!("{BASE_PROMPT}\n\nYou are a terse assistant. Who was the first president of the USA.");
 
     let body = serde_json::json!({
@@ -51,7 +51,7 @@ async fn main() -> anyhow::Result<()> {
         "store": false,
         "stream": true,
         "include": ["reasoning.encrypted_content"],
-        "prompt_cache_key": conv_id,
+        "prompt_cache_key": prompt_cache_key,
     });
 
     let client = reqwest::Client::new();
